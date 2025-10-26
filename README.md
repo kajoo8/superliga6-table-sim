@@ -32,14 +32,16 @@ Both versions dynamically update Elo ratings after each simulated match and aggr
 
 Each match result (win/draw/loss) is sampled probabilistically based on Elo ratings:
 
-\[
-P(A\ wins) = \frac{1}{1 + 10^{(Elo_B - Elo_A)/400}}
-\]
+$$
+P(A\ wins) = \frac{1}{1 + 10^{(ELO_B - ELO_A)/400}}
+$$
 
 After each match:
-\[
-Elo_{new} = Elo_{old} + K \cdot (S - E)
-\]
+
+$$
+ELO_{new} = ELO_{old} + K \cdot (S - E)
+$$
+
 where `S` is the actual result (1, 0.5, or 0), and `E` is the expected score.
 
 ---
@@ -48,12 +50,13 @@ where `S` is the actual result (1, 0.5, or 0), and `E` is the expected score.
 
 Here, Elo ratings are converted into **expected goals (λ)** for each team, and match outcomes are determined from **simulated goal counts**:
 
-\[
-\lambda_A = base\_goals \times 10^{(Elo_A - Elo_B)/800}
-\]
-\[
-\lambda_B = base\_goals \times 10^{(Elo_B - Elo_A)/800}
-\]
+$$
+\lambda_A = baseGoals \times 10^{(ELO_A - ELO_B)/800}
+$$
+
+$$
+\lambda_B = baseGoals \times 10^{(ELO_B - ELO_A)/800}
+$$
 
 ---
 
@@ -67,5 +70,6 @@ Here, Elo ratings are converted into **expected goals (λ)** for each team, and 
     - Sort and rank teams by points, goal difference, and goals scored.
     - Record each team’s final position.
 4. Aggregate all simulations to compute probability distributions for league outcomes.
+
 
 ---
