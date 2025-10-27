@@ -57,7 +57,7 @@ def calculate_base_goals(teams_data):
     Returns average goals per team per match.
     """
     total_goals = sum(data["GF"] for data in teams_data.values())
-    total_matches = sum(data["M"] for data in teams_data.values()) / 2  # każda gra liczy się podwójnie w tabeli
+    total_matches = sum(data["M"] for data in teams_data.values()) / 2  # every game is counted twice in the table stats
     base_goals = total_goals / total_matches
     return base_goals / 2 # average goals per team per match
 
@@ -166,4 +166,5 @@ def get_match_result(goals_a, goals_b):
     elif goals_a == goals_b:
         return 0.5, 0.5  # Draw
     else:
+
         return 0.0, 1.0  # Team B wins
