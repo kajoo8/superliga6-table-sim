@@ -117,32 +117,36 @@ def update_elo(elo_a, elo_b, S_a, S_b, K=20):
     return elo_a_new, elo_b_new
 
 
-def simulate_goals(elo_a, elo_b, base_lambda=1.5):
+def simulate_goals(elo_a, elo_b, base_lambda=1.5, draw_bias=0.1):
     """
     Simulate goals for both teams using Poisson distributions.
-    Expected goals are based on Elo difference.
-    
-    Parameters:
-    -----------
+    Adds realistic chance for draws by biasing toward equal scores.
+
+    Parameters
+    ----------
     elo_a : float
         Elo rating of team A
     elo_b : float
         Elo rating of team B
     base_lambda : float
         Base expected goals (average goals per team)
+    draw_bias : float
+        Additional probability (0-1) of converting a non-draw into a draw
 
-    Returns:
-    --------
+    Returns
+    -------
     goals_a, goals_b : int, int
         Simulated goals for teams A and B
     """
-    # Calculate expected goals based on Elo difference
     exp_a = base_lambda * 10 ** ((elo_a - elo_b) / 800)
     exp_b = base_lambda * 10 ** ((elo_b - elo_a) / 800)
 
-    # Sample from Poisson distributions
     goals_a = np.random.poisson(exp_a)
     goals_b = np.random.poisson(exp_b)
+
+    if goals_a != goals_b and np.random.random() < draw_bias:
+        avg_goals = round((goals_a + goals_b) / 2)
+        goals_a = goals_b = max(0, avg_goals)
 
     return goals_a, goals_b
 
