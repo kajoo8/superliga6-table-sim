@@ -20,7 +20,8 @@ Both versions dynamically update Elo ratings after each simulated match and aggr
 
 - Dynamic **Elo rating updates** after every simulated match.  
 - Flexible configuration (number of simulations, Elo K-factor, etc.).  
-- Automatic handling of tiebreakers (goal difference, goals scored).  
+- Automatic handling of tiebreakers (goal difference, goals scored).
+- Estimated results and win probabilities of remaining matches. 
 - Statistical summaries of finishing position probabilities.  
 - Rich **visualizations**: heatmaps, probability bars, and distributions.
 
@@ -73,3 +74,4 @@ $$
 
 
 ---
+
