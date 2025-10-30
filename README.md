@@ -29,7 +29,7 @@ Both versions dynamically update Elo ratings after each simulated match and aggr
 
 ## 📈 Model Details
 
-### 1️⃣ Elo-based Model (`elo_simulation.ipynb`)
+### 1️⃣ Elo-based Model (`elo_simulation.ipynb`) -- no longer developed
 
 Each match result (win/draw/loss) is sampled probabilistically based on Elo ratings:
 
@@ -47,7 +47,7 @@ where `S` is the actual result (1, 0.5, or 0), and `E` is the expected score.
 
 ---
 
-### 2️⃣ Poisson-based Model (`poisson_simulation.ipynb`)
+### 2️⃣ Poisson-based Model (`poisson_simulation.ipynb`) -- still under development
 
 Here, Elo ratings are converted into **expected goals (λ)** for each team, and match outcomes are determined from **simulated goal counts**:
 
@@ -74,4 +74,5 @@ $$
 
 
 ---
+
 
