@@ -62,10 +62,10 @@ Expected goals (λ) for each side depend on:
 - (optionally) `Elo` — small dynamic form correction.
 
 $$
-\lambda_A = base\_lambda \times attack_A \times defense_B
+\lambda_A = λ \cdot attack_A \cdot defense_B
 $$
 $$
-\lambda_B = base\_lambda \times attack_B \times defense_A
+\lambda_B = λ \cdot attack_B \cdot defense_A
 $$
 
 After each simulated match:
@@ -116,3 +116,4 @@ After every simulated match:
    - Average points needed for 1st and 8th place (survival threshold).
 
 ---
+
