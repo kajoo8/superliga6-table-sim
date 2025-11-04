@@ -1,4 +1,4 @@
-After 6th matchday (+1 match overdued)
+After 7th matchday (+1 match overdued)
 
 ![alt text](elo-1.png)
 
