@@ -153,6 +153,8 @@ def simulate_goals(team_a, team_b, base_lambda, attack, defense,
         elo_mult = 10 ** ((elo_a - elo_b) / elo_factor)
         exp_a *= elo_mult
         exp_b /= elo_mult
+        exp_a = np.clip(exp_a, 0.1, 8.0)
+        exp_b = np.clip(exp_b, 0.1, 8.0)
 
     goals_a = int(np.random.poisson(exp_a))
     goals_b = int(np.random.poisson(exp_b))
