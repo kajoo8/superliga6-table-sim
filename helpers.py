@@ -48,21 +48,6 @@ def compute_auto_elo(teams_data, alpha=1.0, beta=0.8, gamma=0.2, sigma=100.0):
     return {t: round(elo[t]) for t in elo}
 
 
-def calculate_base_goals(teams_data):
-    """
-    Calculates BASE_GOALS for whole league based on the actual table.
-    
-    teams_data: dict:
-        {"Team": {"M": int, "GF": int, "GA": int, ...}, ...}
-    
-    Returns average goals per team per match.
-    """
-    total_goals = sum(data["GF"] for data in teams_data.values())
-    total_matches = sum(data["M"] for data in teams_data.values()) / 2  # every game is counted twice in the table stats
-    base_goals = total_goals / total_matches
-    return base_goals / 2 # average goals per team per match
-
-
 def estimate_draw_prob(teams_data):
     """
     Estimates draw prob based on current league data.
@@ -71,7 +56,9 @@ def estimate_draw_prob(teams_data):
     total_draws = sum(d["D"] for d in teams_data.values()) / 2.0
     total_matches = sum(d["M"] for d in teams_data.values()) / 2.0
     if total_matches <= 0:
-        return 0.25
+        return 0.15
+    if total_draws / total_matches < 0.1:
+        return 0.1
     return total_draws / total_matches
 
 
@@ -118,54 +105,6 @@ def update_elo(elo_a, elo_b, S_a, S_b, K=20):
     return elo_a_new, elo_b_new
 
 
-def simulate_goals(team_a, team_b, base_lambda, attack, defense, 
-                   elo_a=None, elo_b=None, elo_factor=None, draw_bias=0.1):
-    """
-    Simulate goals for both teams using Poisson distributions.
-    Combines attack/defense strengths and optionally Elo influence.
-    Adds small bias to increase draw probability.
-
-    Parameters
-    ----------
-    team_a, team_b : str
-        Team names
-    base_lambda : float
-        Base expected goals per team
-    attack, defense : dict
-        Attack and defense multipliers per team (mean ≈ 1)
-    elo_a, elo_b : float or None
-        Optional Elo ratings (for hybrid correction)
-    elo_factor : float or None
-        If provided, controls Elo effect scale (e.g. 800)
-    draw_bias : float
-        Probability of forcing a draw (0–1)
-
-    Returns
-    -------
-    goals_a, goals_b : int, int
-        Simulated goals for teams A and B
-    """
-    exp_a = base_lambda * attack[team_a] * defense[team_b]
-    exp_b = base_lambda * attack[team_b] * defense[team_a]
-
-    # optional Elo adjustment
-    if elo_a is not None and elo_b is not None and elo_factor is not None:
-        elo_mult = 10 ** ((elo_a - elo_b) / elo_factor)
-        exp_a *= elo_mult
-        exp_b /= elo_mult
-        exp_a = np.clip(exp_a, 0.1, 8.0)
-        exp_b = np.clip(exp_b, 0.1, 8.0)
-
-    goals_a = int(np.random.poisson(exp_a))
-    goals_b = int(np.random.poisson(exp_b))
-
-    if goals_a != goals_b and np.random.random() < draw_bias:
-        avg_goals = int(round((goals_a + goals_b) / 2))
-        goals_a = goals_b = max(0, avg_goals)
-
-    return goals_a, goals_b
-
-
 def get_match_result(goals_a, goals_b):
     """
     Determine match result based on goals scored.
@@ -187,63 +126,3 @@ def get_match_result(goals_a, goals_b):
     else:
 
         return 0.0, 1.0  # Team B wins
-
-
-def init_attack_defense(teams_data):
-    """
-    Initialize attack and defense strengths and base_lambda from league table.
-    """
-    df = pd.DataFrame.from_dict(teams_data, orient='index')
-    df['GFpg'] = df['GF'] / df['M']
-    df['GApg'] = df['GA'] / df['M']
-
-    base_lambda = df['GFpg'].mean()
-    attack = (df['GFpg'] / base_lambda).to_dict()
-    defense = (df['GApg'] / base_lambda).to_dict()
-
-    # normalize (mean = 1)
-    a_mean = np.mean(list(attack.values()))
-    d_mean = np.mean(list(defense.values()))
-    attack = {t: v / a_mean for t, v in attack.items()}
-    defense = {t: v / d_mean for t, v in defense.items()}
-
-    return base_lambda, attack, defense
-
-
-def recompute_attack_defense(gf, ga, games, normalize=True):
-    """
-    Recompute base_lambda, attack, defense after matches.
-    """
-    df = pd.DataFrame({
-        'GF': pd.Series(gf),
-        'GA': pd.Series(ga),
-        'M': pd.Series(games)
-    })
-    df['GFpg'] = df['GF'] / df['M'].replace(0, np.nan)
-    df['GApg'] = df['GA'] / df['M'].replace(0, np.nan)
-    df.fillna(df.mean(numeric_only=True), inplace=True)
-
-    base_lambda = df['GFpg'].mean()
-    attack = (df['GFpg'] / base_lambda).to_dict()
-    defense = (df['GApg'] / base_lambda).to_dict()
-
-    if normalize:
-        a_mean = np.mean(list(attack.values()))
-        d_mean = np.mean(list(defense.values()))
-        attack = {t: v / a_mean for t, v in attack.items()}
-        defense = {t: v / d_mean for t, v in defense.items()}
-
-    return base_lambda, attack, defense
-
-
-def fast_recompute_attack_defense(gf, ga, games):
-    gfpg = {t: gf[t]/games[t] if games[t]>0 else 0 for t in gf}
-    gapg = {t: ga[t]/games[t] if games[t]>0 else 0 for t in ga}
-    base = np.mean(list(gfpg.values()))
-    attack = {t: gfpg[t]/base for t in gf}
-    defense = {t: gapg[t]/base for t in ga}
-    mean_a = np.mean(list(attack.values()))
-    mean_d = np.mean(list(defense.values()))
-    attack = {t: v/mean_a for t,v in attack.items()}
-    defense = {t: v/mean_d for t,v in defense.items()}
-    return base, attack, defense
