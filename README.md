@@ -1,154 +1,142 @@
-# Monte Carlo League Simulation Dashboard
+# ⚽ Monte Carlo League Simulation Dashboard
 
-A comprehensive Streamlit dashboard for visualizing Monte Carlo simulation results of league standings and match outcomes.
+Interactive Streamlit dashboard for visualizing Monte Carlo simulation results of league final positions.
 
 ## Features
 
-### 📈 Overview
-- Key metrics (teams, matches played, points needed for title/safety)
-- Title race leaders with probabilities
-- Relegation battle analysis
-- Championship probability visualization
+### 📈 Simulation Overview
+- Key metrics: number of teams, matches played, points needed for title and safety
+- Title race leaders with championship probabilities
+- Relegation battle statistics
+- Championship probability bar chart for all teams
 
-### 📊 Current Standings
-- Live league table with sorting
-- Color-coded performance metrics
-- Top scorers visualization
-- Best defenses comparison
+### 📊 Current League Standings
+- Complete league table with all statistics (M, W, D, L, GF, GA, GD, Pts)
+- Color-coded visualization (points in green gradient, goal difference in red-yellow-green)
+- Top 5 scorers chart
+- Top 5 best defenses chart
 
 ### 🎯 Position Probabilities
-- Interactive heatmap showing probability of each final position
-- Most likely final position for each team
-- Detailed probability distributions
+- Interactive heatmap showing probability of each team finishing in each position
+- Most likely final position scatter plot
+- Team-specific position distribution with dropdown selector
+- All probabilities rounded to 2 decimal places
 
 ### 🗓️ Next Matchday Predictions
-- Win/Draw probabilities for upcoming matches
-- Visual probability bars
-- Head-to-head predictions
+- Win/draw probabilities for upcoming matches
+- Visual probability bars for each fixture
+- Team-by-team matchup analysis
 
 ### 📅 Remaining Fixtures
 - Complete list of remaining matches
-- Fixture count by team
-- Visual distribution of remaining games
+- Distribution of remaining matches by team
+- Visual bar chart showing fixture count per team
 
 ## Installation
 
-1. Install required packages:
 ```bash
-pip install -r requirements.txt
+pip install streamlit pandas plotly
 ```
+
+## Required Data Files
+
+The application expects the following JSON files in the `output/after3rdMatchday/` directory:
+
+- `teams_data.json` - Current team statistics
+- `prob_table.json` - Position probability table
+- `next_matchday_probs.json` - Next matchday predictions
+- `remaining_matches.json` - List of remaining fixtures
+- `estimated_points_needed.json` - Points estimates for title and safety
 
 ## Usage
 
-### Option 1: With JSON files in the same directory
-
-Place your JSON files in the same directory as `monte_carlo_app.py`:
-- `teams_data.json`
-- `prob_table.json`
-- `next_matchday_probs.json`
-- `remaining_matches.json`
-- `estimated_points_needed.json`
-
-Then run:
 ```bash
-streamlit run monte_carlo_app.py
+streamlit run streamlitApp.py
 ```
 
-### Option 2: Upload files through the app
-
-Run the app:
-```bash
-streamlit run monte_carlo_app.py
-```
-
-Then upload your JSON files using the sidebar file uploaders.
-
-## JSON File Formats
+## Data Format
 
 ### teams_data.json
 ```json
 {
-    "Team Name": {
-        "M": matches_played,
-        "W": wins,
-        "D": draws,
-        "L": losses,
-        "GF": goals_for,
-        "GA": goals_against,
-        "GD": goal_difference,
-        "Pts": points
-    }
+  "Team Name": {
+    "M": 3,
+    "W": 2,
+    "D": 1,
+    "L": 0,
+    "GF": 5,
+    "GA": 2,
+    "GD": 3,
+    "Pts": 7
+  }
 }
 ```
 
 ### prob_table.json
 ```json
 {
-    "Team Name": {
-        "pos_1": probability,
-        "pos_2": probability,
-        ...
-    }
+  "Team Name": {
+    "pos_1": 0.45,
+    "pos_2": 0.30,
+    "pos_3": 0.15,
+    ...
+  }
 }
 ```
 
 ### next_matchday_probs.json
 ```json
 [
-    {
-        "Team A": "team_name",
-        "A_win_%": win_probability,
-        "Draw_%": draw_probability,
-        "B_win_%": win_probability,
-        "Team B": "team_name"
-    }
+  {
+    "Team A": "Team 1",
+    "Team B": "Team 2",
+    "A_win_%": 45.5,
+    "Draw_%": 25.0,
+    "B_win_%": 29.5
+  }
 ]
 ```
 
 ### remaining_matches.json
 ```json
 [
-    ["Home Team", "Away Team"],
-    ["Home Team", "Away Team"]
+  ["Home Team", "Away Team"],
+  ["Team A", "Team B"]
 ]
 ```
 
 ### estimated_points_needed.json
 ```json
 {
-    "points_for_title": number,
-    "points_for_safety": number
+  "points_for_title": 85.5,
+  "points_for_safety": 38.2
 }
 ```
 
-## Navigation
+## Features
 
-Use the sidebar to switch between different views:
-- **Overview**: High-level summary and key insights
-- **Current Standings**: League table and team statistics
-- **Position Probabilities**: Detailed probability analysis
-- **Next Matchday**: Upcoming match predictions
-- **Remaining Fixtures**: Schedule of remaining games
+- **Single Page Layout**: All statistics visible on one page without navigation
+- **Dark Mode Support**: Optimized styling for both light and dark themes
+- **Interactive Visualizations**: Hover-free charts with values displayed directly on bars
+- **Responsive Design**: Adapts to different screen sizes
+- **Team Selector**: Dropdown menu to analyze individual team position distributions
 
-## Requirements
+## Customization
 
-- Python 3.8+
-- streamlit
-- pandas
-- plotly
+The dashboard uses custom CSS for styling. Key style elements can be modified in the `st.markdown()` section at the top of the file:
 
-## Tips
+- `.main-header` - Main dashboard title
+- `.section-header` - Section headers
+- `.metric-card` - Metric display cards (title race, relegation battle)
 
-- The app will cache data for better performance
-- Use the Overview page for quick insights
-- Position Probabilities heatmap shows the full distribution
-- Next Matchday predictions are based on simulation results
-- All visualizations are interactive (hover for details)
+## Dependencies
 
-## Troubleshooting
+- `streamlit` - Web application framework
+- `pandas` - Data manipulation
+- `plotly` - Interactive visualizations
+- `json` - JSON file handling
+- `pathlib` - File path operations
 
-**File not found error**: Make sure your JSON files are in the same directory as the app, or upload them using the sidebar.
+## License
 
-**JSON decode error**: Verify your JSON files are properly formatted.
-
-**Import error**: Run `pip install -r requirements.txt` to install dependencies.
+This project is open source and available under the MIT License.
