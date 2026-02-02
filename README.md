@@ -1,63 +1,154 @@
-# ⚽ Football League Simulation
+# Monte Carlo League Simulation Dashboard
 
-## 📋 Project Overview
+A comprehensive Streamlit dashboard for visualizing Monte Carlo simulation results of league standings and match outcomes.
 
-This project simulates the remainder of a football league season using **Monte Carlo simulations** powered by **Elo ratings**.  
-It estimates the **probability of each team finishing in every table position**, given the current standings and remaining fixtures.
+## Features
 
-Two modeling approaches are implemented in separate Jupyter notebooks:
+### 📈 Overview
+- Key metrics (teams, matches played, points needed for title/safety)
+- Title race leaders with probabilities
+- Relegation battle analysis
+- Championship probability visualization
 
-| Notebook | Description |
-|-----------|--------------|
-| `elo_simulation.ipynb` | Match outcomes are drawn directly from Elo-based win/draw/loss probabilities. |
+### 📊 Current Standings
+- Live league table with sorting
+- Color-coded performance metrics
+- Top scorers visualization
+- Best defenses comparison
 
-Both versions dynamically update Elo ratings after each simulated match and aggregate thousands of season simulations to estimate outcome probabilities.
+### 🎯 Position Probabilities
+- Interactive heatmap showing probability of each final position
+- Most likely final position for each team
+- Detailed probability distributions
 
----
+### 🗓️ Next Matchday Predictions
+- Win/Draw probabilities for upcoming matches
+- Visual probability bars
+- Head-to-head predictions
 
-## 🚀 Key Features
+### 📅 Remaining Fixtures
+- Complete list of remaining matches
+- Fixture count by team
+- Visual distribution of remaining games
 
-- Monte Carlo simulations (10,000+ full-season runs).  
-- Dynamic updating of **Elo ratings**, **team attack and defense strengths**, and **base goal rate (λ)**.  
-- Automatic handling of league tiebreakers (goal difference, goals scored).  
-- Comprehensive result statistics (title chances, relegation risk, position distributions).  
-- Clear and attractive **visualizations**: probability bars, histograms, and heatmaps.
+## Installation
 
----
+1. Install required packages:
+```bash
+pip install -r requirements.txt
+```
 
-## 📈 Model Details
+## Usage
 
-### 1️⃣ Elo-based Model (`elo_simulation.ipynb`) -- no longer developed
+### Option 1: With JSON files in the same directory
 
-Each match result (win/draw/loss) is sampled probabilistically based on Elo ratings:
+Place your JSON files in the same directory as `monte_carlo_app.py`:
+- `teams_data.json`
+- `prob_table.json`
+- `next_matchday_probs.json`
+- `remaining_matches.json`
+- `estimated_points_needed.json`
 
-$$
-P(A\ wins) = \frac{1}{1 + 10^{(ELO_B - ELO_A)/400}}
-$$
+Then run:
+```bash
+streamlit run monte_carlo_app.py
+```
 
-After each match:
+### Option 2: Upload files through the app
 
-$$
-ELO_{new} = ELO_{old} + K \cdot (S - E)
-$$
+Run the app:
+```bash
+streamlit run monte_carlo_app.py
+```
 
-where `S` is the actual result (1, 0.5, or 0), and `E` is the expected score. This model assumes the result depends directly on relative team ratings.
+Then upload your JSON files using the sidebar file uploaders.
 
----
+## JSON File Formats
 
-## 🧩 Simulation Workflow
+### teams_data.json
+```json
+{
+    "Team Name": {
+        "M": matches_played,
+        "W": wins,
+        "D": draws,
+        "L": losses,
+        "GF": goals_for,
+        "GA": goals_against,
+        "GD": goal_difference,
+        "Pts": points
+    }
+}
+```
 
-1. Load current league table and remaining fixtures.  
-2. Compute initial Elo, attack, defense, and base_lambda.  
-3. For each simulation (e.g., 10,000 iterations):
-   - Simulate every remaining match.  
-   - Update team stats and parameters dynamically.  
-   - Apply tiebreakers (goal difference → goals for → goals against).  
-   - Record team positions and key metrics (points, GF, GA).  
-4. Aggregate results across all runs to compute:
-   - Probability of finishing in each table position,  
-   - Title and relegation probabilities,  
-   - Average points needed for 1st and 8th place (survival threshold).
+### prob_table.json
+```json
+{
+    "Team Name": {
+        "pos_1": probability,
+        "pos_2": probability,
+        ...
+    }
+}
+```
 
----
+### next_matchday_probs.json
+```json
+[
+    {
+        "Team A": "team_name",
+        "A_win_%": win_probability,
+        "Draw_%": draw_probability,
+        "B_win_%": win_probability,
+        "Team B": "team_name"
+    }
+]
+```
 
+### remaining_matches.json
+```json
+[
+    ["Home Team", "Away Team"],
+    ["Home Team", "Away Team"]
+]
+```
+
+### estimated_points_needed.json
+```json
+{
+    "points_for_title": number,
+    "points_for_safety": number
+}
+```
+
+## Navigation
+
+Use the sidebar to switch between different views:
+- **Overview**: High-level summary and key insights
+- **Current Standings**: League table and team statistics
+- **Position Probabilities**: Detailed probability analysis
+- **Next Matchday**: Upcoming match predictions
+- **Remaining Fixtures**: Schedule of remaining games
+
+## Requirements
+
+- Python 3.8+
+- streamlit
+- pandas
+- plotly
+
+## Tips
+
+- The app will cache data for better performance
+- Use the Overview page for quick insights
+- Position Probabilities heatmap shows the full distribution
+- Next Matchday predictions are based on simulation results
+- All visualizations are interactive (hover for details)
+
+## Troubleshooting
+
+**File not found error**: Make sure your JSON files are in the same directory as the app, or upload them using the sidebar.
+
+**JSON decode error**: Verify your JSON files are properly formatted.
+
+**Import error**: Run `pip install -r requirements.txt` to install dependencies.

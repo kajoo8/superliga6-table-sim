@@ -1,0 +1,37 @@
+[
+    {
+        "Team A": "EKO-RAFF",
+        "A_win_%": 69.1,
+        "Draw_%": 10.0,
+        "B_win_%": 20.9,
+        "Team B": "Niski Press"
+    },
+    {
+        "Team A": "Inferno Team",
+        "A_win_%": 37.6,
+        "Draw_%": 9.9,
+        "B_win_%": 52.5,
+        "Team B": "Banger W-wa"
+    },
+    {
+        "Team A": "Fakel",
+        "A_win_%": 58.5,
+        "Draw_%": 10.0,
+        "B_win_%": 31.5,
+        "Team B": "Tune Squad"
+    },
+    {
+        "Team A": "Cyrkulatka",
+        "A_win_%": 35.8,
+        "Draw_%": 9.8,
+        "B_win_%": 54.4,
+        "Team B": "Eternis Księgowość"
+    },
+    {
+        "Team A": "La Masia",
+        "A_win_%": 30.3,
+        "Draw_%": 10.1,
+        "B_win_%": 59.6,
+        "Team B": "FC Otamany"
+    }
+]
